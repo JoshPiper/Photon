@@ -13,6 +13,7 @@ async function run(){
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
 	const api = octokit.rest
 	let last = null
+	let biggestLast = null
 
 	const releases = getTags(api, owner, repo)
 	for (let release of releases){
