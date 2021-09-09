@@ -19,7 +19,25 @@ async function run(){
 	for await (let release of releases){
 		console.log(release)
 
-		let version = SemVer.parseSemVer(release.tag_name)
+		let tag_name = release.tag_name
+
+		let major_only = /^v?\d+$/
+		let major_minor_only = /^v?\d+\.\d+$/
+		let full = /^v?\d+\.\d+\.\d+$/
+
+		let version
+		if (tag_name.match(full)){
+			version = SemVer.parseSemVer(tag_name)
+		} else if (tag_name.match(major_minor_only)){
+			version = SemVer.parseSemVer(tag_name + ".0")
+		} else if (tag_name.match(major_only)){
+			version = SemVer.parseSemVer(tag_name + ".0.0")
+		}
+
+		if (!version){
+			continue;
+		}
+
 		console.log(version)
 	}
 }
