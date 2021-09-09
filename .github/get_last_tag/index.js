@@ -12,7 +12,30 @@ async function run(){
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
 	const rest = octokit.rest
 
-	let {data: releases} = await rest.repos.listReleases({owner, repo})
+	const releases = getTags(rest, owner, repo)
 	console.log(releases)
 }
+
+/**
+ *
+ * @param {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} api
+ * @param {string} owner
+ * @param {string} repo
+ * @param {int} per_page
+ * @returns {AsyncGenerator<*, void, *>}
+ */
+async function* getTags(api, owner, repo, per_page = 20){
+	let page = 0
+	let page_length = per_page
+
+	while (page_length === per_page){
+		page++
+		let {data: releases} = await api.repos.listReleases({owner, repo, per_page, page})
+		for (let release of releases){
+			yield release
+		}
+		page_length = releases.length
+	}
+}
+
 run()
