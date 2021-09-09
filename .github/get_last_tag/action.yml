@@ -1,5 +1,11 @@
 name: Get Last Tag
 description: Gets the last photon tag.
+
+runs:
+  main: index.js
+  using: node12
+  pre: npm i
+
 inputs:
   token:
     description: Github Token
