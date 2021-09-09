@@ -12,3 +12,5 @@ async function run(){
 	let {data: releases} = await octokit.rest.repository.releases({owner, repo})
 	console.log(releases)
 }
+
+run()
