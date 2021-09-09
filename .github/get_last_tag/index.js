@@ -10,9 +10,9 @@ async function run(){
 	const tag = core.getInput("tag")
 
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
-	const rest = octokit.rest
+	const api = octokit.rest
 
-	const releases = getTags(rest, owner, repo)
+	const releases = getTags(api, owner, repo)
 	console.log(releases.next())
 }
 
