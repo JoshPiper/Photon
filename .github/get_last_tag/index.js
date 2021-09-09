@@ -13,7 +13,7 @@ async function run(){
 	const rest = octokit.rest
 
 	const releases = getTags(rest, owner, repo)
-	console.log(releases)
+	console.log(releases.next())
 }
 
 /**
