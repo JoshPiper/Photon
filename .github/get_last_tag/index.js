@@ -1,5 +1,6 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
+const SemVer = require("semver-parser")
 
 async function run(){
 	const token = core.getInput("token")
@@ -11,9 +12,16 @@ async function run(){
 
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
 	const api = octokit.rest
+	let last = null
 
 	const releases = getTags(api, owner, repo)
-	console.log(await releases.next())
+	for (let release of releases){
+		release = await release
+		console.log(release)
+
+		let version = SemVer.parseSemVer(release.tag_name)
+		console.log(version)
+	}
 }
 
 /**
