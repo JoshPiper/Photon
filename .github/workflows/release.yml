@@ -16,6 +16,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Get Current Tag
         run: echo "${{ github.event.inputs.version }}"
+      - name: Install Deps
+        run: cd .github/get_last_tag && npm i
       - name: Get Last Tags
         uses: ./.github/get_last_tag
         with:
