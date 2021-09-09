@@ -7,10 +7,12 @@ async function run(){
 
 	const owner = core.getInput("owner")
 	const repo = core.getInput("repository")
-
 	const tag = core.getInput("tag")
-	let {data: releases} = await octokit.rest.repository.releases({owner, repo})
+
+	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
+	const rest = octokit.rest
+
+	let {data: releases} = await rest.repos.listReleases({owner, repo})
 	console.log(releases)
 }
-
 run()
