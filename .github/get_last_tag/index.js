@@ -2,6 +2,23 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const SemVer = require("semver-parser")
 
+/**
+ * Appends any required ".0" to make a partial tag into a full semver tag (v75 -> v75.0.0)
+ * @param {string} tag
+ * @returns {string|null}
+ */
+function make_full(tag){
+	if (tag.match(/^v?\d+\.\d+\.\d+$/)){
+		return tag
+	} else if (tag.match(/^v?\d+\.\d+$/)){
+		return tag + ".0"
+	} else if (tag.match(/^v?\d+$/)){
+		return tag + ".0.0"
+	}
+
+	return null
+}
+
 async function run(){
 	const token = core.getInput("token")
 	const octokit = github.getOctokit(token)
@@ -12,7 +29,7 @@ async function run(){
 
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
 	const api = octokit.rest
-	let last = null
+	let last = tag.toUpperCase() != "LATEST" ?
 	let biggestLast = null
 
 	const releases = getTags(api, owner, repo)
@@ -21,18 +38,10 @@ async function run(){
 
 		let tag_name = release.tag_name
 
-		let major_only = /^v?\d+$/
-		let major_minor_only = /^v?\d+\.\d+$/
-		let full = /^v?\d+\.\d+\.\d+$/
+
 
 		let version
-		if (tag_name.match(full)){
-			version = SemVer.parseSemVer(tag_name)
-		} else if (tag_name.match(major_minor_only)){
-			version = SemVer.parseSemVer(tag_name + ".0")
-		} else if (tag_name.match(major_only)){
-			version = SemVer.parseSemVer(tag_name + ".0.0")
-		}
+
 
 		if (!version){
 			continue;
