@@ -16,8 +16,7 @@ async function run(){
 	let biggestLast = null
 
 	const releases = getTags(api, owner, repo)
-	for (let release of releases){
-		release = await release
+	for await (let release of releases){
 		console.log(release)
 
 		let version = SemVer.parseSemVer(release.tag_name)
