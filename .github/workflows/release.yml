@@ -21,10 +21,10 @@ jobs:
       - name: Get Current Tag
         run: echo "${{ github.event.inputs.version }}"
       - name: Install Deps
-        run: cd .github/get_last_tag && npm i
+        run: cd .github/tag_bump && npm i
       - name: Get Test Tag Bumping
         id: bump
-        uses: ./.github/get_last_tag
+        uses: ./.github/tag_bump
         with:
           owner: JoshPiper
           token: ${{ github.token }}

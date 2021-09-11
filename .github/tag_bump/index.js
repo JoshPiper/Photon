@@ -66,7 +66,6 @@ async function run(){
 	} else {
 		core.setOutput("next", `v${version.major}`)
 	}
-
 }
 
 /**

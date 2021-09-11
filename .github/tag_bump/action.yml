@@ -1,5 +1,5 @@
-name: Get Last Tag
-description: Gets the last photon tag.
+name: Tag Bump
+description: Gets the last photon tag and creates a bumped tag.
 
 runs:
   main: index.js
