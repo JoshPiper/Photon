@@ -29,12 +29,16 @@ async function run(){
 
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
 	const api = octokit.rest
+
+
 	/** @type {?string} */
 	let last = tag.toUpperCase() !== "LATEST" ? make_full(tag) : null
 	/** @type {?object} */
 	let biggestLast = null
 
-
+	core.info("Getting Latest Tag")
+	let lastTag = getBiggestTag(api, owner, repo, tag)
+	core.info(lastTag)
 }
 
 /**
@@ -107,13 +111,7 @@ async function getBiggestTag(api, owner, repo, before = null){
 		biggestLast = release
 	}
 
-	return
-
-	if (biggestLast === null){
-		core.setFailed("Unable to find release under these conditions.")
-	} else {
-		console.log(biggestLast)
-	}
+	return biggestLast
 }
 
 run()
