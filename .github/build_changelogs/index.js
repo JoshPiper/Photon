@@ -5,8 +5,8 @@ const changelog = require("conventional-changelog-core")
 
 /**
  * Read a stream, and return the read data as a string on stream closure.
- * @param {ReadableStream} stream
- * @param {string} encoding
+ * @param {import("Stream").ReadableStream} stream
+ * @param {BufferEncoding} encoding
  * @returns {Promise<string>}
  */
 function stream_to_string(stream, encoding="utf8"){
