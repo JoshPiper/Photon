@@ -38,7 +38,13 @@ async function run(){
 
 	core.info("Getting Latest Tag")
 	let lastTag = await getBiggestTag(api, owner, repo, tag)
-	core.info(lastTag)
+	if (lastTag === null){
+		core.setFailed("Unable to find last tag")
+		return
+	} else {
+		core.info(lastTag.tag_name)
+	}
+
 }
 
 /**
