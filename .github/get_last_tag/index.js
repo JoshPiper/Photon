@@ -29,25 +29,31 @@ async function run(){
 
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
 	const api = octokit.rest
-	let last = tag.toUpperCase() != "LATEST" ?
+	let last = tag.toUpperCase() !== "LATEST" ? make_full(tag) : null
+	/** @type {object|null} */
 	let biggestLast = null
 
 	const releases = getTags(api, owner, repo)
 	for await (let release of releases){
-		console.log(release)
-
 		let tag_name = release.tag_name
+		let tag_semver = make_full(release.tag_name)
+		let tag_version = SemVer.parseSemVer(tag_semver)
 
-
-
-		let version
-
-
-		if (!version){
-			continue;
+		if (last !== null && parseInt(tag_version.major) !== parseInt(SemVer.parseSemVer(last).major) - 1){
+			continue
 		}
 
-		console.log(version)
+		if (biggestLast !== null && SemVer.compareSemVer(tag_semver, make_full(biggestLast.tag_name)) <= 0){
+			continue
+		}
+
+		biggestLast = release
+	}
+
+	if (biggestLast === null){
+		core.setFailed("Unable to find release under these conditions.")
+	} else {
+		console.log(biggestLast)
 	}
 }
 
