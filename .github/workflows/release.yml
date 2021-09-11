@@ -21,7 +21,9 @@ jobs:
       - name: Get Current Tag
         run: echo "${{ github.event.inputs.version }}"
       - name: Install Deps
-        run: cd .github/tag_bump && npm i
+        run: |
+          cd .github/tag_bump && npm i
+          cd .github/build_changelogs && npm i
       - name: Get Test Tag Bumping
         id: bump
         uses: ./.github/tag_bump
@@ -33,3 +35,5 @@ jobs:
         run: echo "$STEP_CONTEXT"
         env:
           STEP_CONTEXT: "${{ toJSON( steps.bump.outputs ) }}"
+      - name: Write Changelog
+        uses: ./.github/build_changelogs

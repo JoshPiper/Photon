@@ -1,0 +1,18 @@
+name: Changelog Builder
+description: Uses conventional commits core to build photon's changelogs.
+
+runs:
+  main: index.js
+  using: node12
+  pre: npm i
+
+inputs:
+  token:
+    description: Github Token
+    required: true
+  before:
+    description: The initial limit to fetch from.
+    required: true
+  after:
+    description: The latest limit to fetch to.
+    required: true
