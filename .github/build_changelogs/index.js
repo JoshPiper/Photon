@@ -3,6 +3,12 @@ const github = require('@actions/github')
 const {inspect} = require("util")
 const changelog = require("conventional-changelog-core")
 
+/**
+ * Read a stream, and return the read data as a string on stream closure.
+ * @param {ReadableStream} stream
+ * @param {string} encoding
+ * @returns {Promise<string>}
+ */
 function stream_to_string(stream, encoding="utf8"){
 	/** @type {Buffer[]} buffers */
 	let buffers = []
