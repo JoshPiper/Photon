@@ -37,3 +37,7 @@ jobs:
           STEP_CONTEXT: "${{ toJSON( steps.bump.outputs ) }}"
       - name: Write Changelog
         uses: ./.github/build_changelogs
+        with:
+          token: ${{ github.token }}
+          before: ${{ steps.bump.outputs.last }}
+          after: ${{ steps.bump.outputs.next }}
