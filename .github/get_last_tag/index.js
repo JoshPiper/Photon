@@ -1,6 +1,7 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
 const SemVer = require("semver-parser")
+const {inspect} = require("util")
 
 /**
  * Appends any required ".0" to make a partial tag into a full semver tag (v75 -> v75.0.0)
@@ -45,6 +46,7 @@ async function run(){
 	}
 
 	let version = SemVer.parseSemVer(lastTag.tag_name)
+	core.info(inspect(version))
 	switch (bump){
 		case "major":
 			version.major = parseInt(version.major) + 1
