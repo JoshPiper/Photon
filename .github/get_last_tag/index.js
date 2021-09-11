@@ -34,33 +34,7 @@ async function run(){
 	/** @type {?object} */
 	let biggestLast = null
 
-	const releases = getTags(api, owner, repo)
-	for await (let release of releases){
-		let tag_name = release.tag_name
-		let tag_semver = make_full(release.tag_name)
-		let tag_version = SemVer.parseSemVer(tag_semver)
 
-		if (last !== null){
-			let testMajor = parseInt(tag_version.major)
-			let lastMajor = parseInt(SemVer.parseSemVer(last).major)
-
-			if (testMajor !== lastMajor || testMajor !== (lastMajor - 1)){
-				continue;
-			}
-		}
-
-		if (biggestLast !== null && SemVer.compareSemVer(tag_semver, make_full(biggestLast.tag_name)) <= 0){
-			continue;
-		}
-
-		biggestLast = release
-	}
-
-	if (biggestLast === null){
-		core.setFailed("Unable to find release under these conditions.")
-	} else {
-		console.log(biggestLast)
-	}
 }
 
 /**
@@ -82,6 +56,63 @@ async function* getTags(api, owner, repo, per_page = 20){
 			yield release
 		}
 		page_length = releases.length
+	}
+}
+
+/**
+ *
+ * @param {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} api
+ * @param {string} owner
+ * @param {string} repo
+ * @param {?string} before
+ * @returns {Promise<void>}
+ */
+async function getBiggestTag(api, owner, repo, before = null){
+	core.info(`Getting last tag before ${before ?? "LATEST"}`)
+	const releases = getTags(api, owner, repo)
+	let biggestLast = null
+	let last = before === null ? before : make_full(before)
+
+	for await (let release of releases){
+
+		let tag_name = release.tag_name
+		core.startGroup(`Testing ${tag_name}`)
+		let tag_semver = make_full(tag_name)
+		core.info(`\tExpands to ${tag_semver}`)
+		let tag_version = SemVer.parseSemVer(tag_semver)
+		core.info(`\tParses as ${tag_version}`)
+
+		if (last !== null){
+			core.info(`\tChecking before ${last}`)
+			let testMajor = parseInt(tag_version.major)
+			core.info(`\tMajor Version: ${testMajor}`)
+			let lastMajor = parseInt(SemVer.parseSemVer(last).major)
+			core.info(`\tChecking Against: ${lastMajor}`)
+
+			if (testMajor !== lastMajor && testMajor !== (lastMajor - 1)){
+				core.info(`\tFailed to Match.`)
+				core.endGroup()
+				continue;
+			}
+		}
+
+		if (biggestLast !== null && SemVer.compareSemVer(tag_semver, make_full(biggestLast.tag_name)) <= 0){
+			core.info(`\t${biggestLast.tag_name} was bigger than ${tag_version}`)
+			core.endGroup()
+			continue;
+		}
+
+		core.info("Updated Latest Tag")
+		core.endGroup()
+		biggestLast = release
+	}
+
+	return
+
+	if (biggestLast === null){
+		core.setFailed("Unable to find release under these conditions.")
+	} else {
+		console.log(biggestLast)
 	}
 }
 
