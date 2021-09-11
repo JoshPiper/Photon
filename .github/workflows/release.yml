@@ -22,8 +22,8 @@ jobs:
         run: echo "${{ github.event.inputs.version }}"
       - name: Install Deps
         run: |
-          cd .github/tag_bump && npm i
-          cd .github/build_changelogs && npm i
+          cd .github/tag_bump && npm i && cd ../..
+          cd .github/build_changelogs && npm i && cd ../..
       - name: Get Test Tag Bumping
         id: bump
         uses: ./.github/tag_bump
