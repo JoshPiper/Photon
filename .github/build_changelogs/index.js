@@ -16,5 +16,6 @@ async function run(){
 	})
 	core.info(buffer)
 	core.info(typeof buffer)
+	core.info(inspect(buffer))
 }
 run()
