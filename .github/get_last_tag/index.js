@@ -68,7 +68,7 @@ async function* getTags(api, owner, repo, per_page = 20){
  * @returns {Promise<void>}
  */
 async function getBiggestTag(api, owner, repo, before = null){
-	core.info(`Getting last tag before ${before ?? "LATEST"}`)
+	core.info(`Getting last tag before ${before ? before : "LATEST"}`)
 	const releases = getTags(api, owner, repo)
 	let biggestLast = null
 	let last = before === null ? before : make_full(before)
