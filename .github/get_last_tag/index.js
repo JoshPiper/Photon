@@ -29,8 +29,9 @@ async function run(){
 
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
 	const api = octokit.rest
+	/** @type {?string} */
 	let last = tag.toUpperCase() !== "LATEST" ? make_full(tag) : null
-	/** @type {object|null} */
+	/** @type {?object} */
 	let biggestLast = null
 
 	const releases = getTags(api, owner, repo)
@@ -39,12 +40,17 @@ async function run(){
 		let tag_semver = make_full(release.tag_name)
 		let tag_version = SemVer.parseSemVer(tag_semver)
 
-		if (last !== null && parseInt(tag_version.major) !== parseInt(SemVer.parseSemVer(last).major) - 1){
-			continue
+		if (last !== null){
+			let testMajor = parseInt(tag_version.major)
+			let lastMajor = parseInt(SemVer.parseSemVer(last).major)
+
+			if (testMajor !== lastMajor || testMajor !== (lastMajor - 1)){
+				continue;
+			}
 		}
 
 		if (biggestLast !== null && SemVer.compareSemVer(tag_semver, make_full(biggestLast.tag_name)) <= 0){
-			continue
+			continue;
 		}
 
 		biggestLast = release
