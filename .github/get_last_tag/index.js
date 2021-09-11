@@ -45,7 +45,7 @@ async function run(){
 		core.info(`Bumping ${bump} for ${lastTag.tag_name}`)
 	}
 
-	let version = SemVer.parseSemVer(lastTag.tag_name)
+	let version = SemVer.parseSemVer(make_full(lastTag.tag_name))
 	core.info(inspect(version))
 	switch (bump){
 		case "major":
