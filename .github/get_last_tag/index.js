@@ -47,12 +47,12 @@ async function run(){
 	let version = SemVer.parseSemVer(lastTag.tag_name)
 	switch (bump){
 		case "major":
-			version.major += 1
+			version.major = parseInt(version.major) + 1
 			version.minor = 0
 			version.patch = 0
 			break
 		case "minor":
-			version.minor += 0
+			version.minor = parseInt(version.minor) + 1
 			version.patch = 0
 			break
 	}
