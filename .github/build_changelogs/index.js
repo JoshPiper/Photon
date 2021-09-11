@@ -35,10 +35,10 @@ async function run(){
 	const after = core.getInput("after")
 
 	let stream = changelog({
-		context: {
-			previousTag: before,
-			currentTag: after
-		}
+		debug: core.info,
+	}, {
+		previousTag: before,
+		currentTag: after
 	})
 	core.info(stream)
 
