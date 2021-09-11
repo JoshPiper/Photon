@@ -36,7 +36,7 @@ async function run(){
 	})
 	core.info(stream)
 
-	let changelog = stream_to_string(stream)
-	core.info(changelog)
+	let log = stream_to_string(stream)
+	core.info(log)
 }
 run()
