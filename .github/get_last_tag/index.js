@@ -37,7 +37,7 @@ async function run(){
 	let biggestLast = null
 
 	core.info("Getting Latest Tag")
-	let lastTag = getBiggestTag(api, owner, repo, tag)
+	let lastTag = await getBiggestTag(api, owner, repo, tag)
 	core.info(lastTag)
 }
 
@@ -84,7 +84,7 @@ async function getBiggestTag(api, owner, repo, before = null){
 		let tag_semver = make_full(tag_name)
 		core.info(`\tExpands to ${tag_semver}`)
 		let tag_version = SemVer.parseSemVer(tag_semver)
-		core.info(`\tParses as ${tag_version}`)
+		core.info(`\tParses as ${tag_version.major}.${tag_version.minor}.${tag_version.patch}`)
 
 		if (last !== null){
 			core.info(`\tChecking before ${last}`)
