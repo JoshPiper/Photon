@@ -3,9 +3,12 @@ name: Build Release
 on:
   workflow_dispatch:
     inputs:
-      version:
+#      version:
+#        required: true
+#        description: New version ID (eg. v75)
+      bump:
         required: true
-        description: New version ID (eg. v75)
+        description: Version type to bump (major / minor)
 
 jobs:
   last-tag:
@@ -18,8 +21,14 @@ jobs:
         run: echo "${{ github.event.inputs.version }}"
       - name: Install Deps
         run: cd .github/get_last_tag && npm i
-      - name: Get Last Tags
+      - name: Get Test Tag Bumping
+        id: bump
         uses: ./.github/get_last_tag
         with:
           owner: JoshPiper
           token: ${{ github.token }}
+          bump: ${{ github.event.inputs.bump }}
+      - name: Dump Step Context
+        run: echo "$STEP_CONTEXT"
+        env:
+          STEP_CONTEXT: ${{ fromJSON( steps.bump.outputs ) }}

@@ -25,26 +25,41 @@ async function run(){
 
 	const owner = core.getInput("owner")
 	const repo = core.getInput("repository")
-	const tag = core.getInput("tag")
+	// const tag = core.getInput("tag")
+	const bump = core.getInput("bump").toLowerCase()
+	if (bump !== "major" && bump !== "minor"){
+		core.setFailed("bump may only be 'major' or 'minor'")
+		return
+	}
 
 	/** @type {import("@octokit/plugin-rest-endpoint-methods/dist-types/types").Api.rest} */
 	const api = octokit.rest
 
-
-	/** @type {?string} */
-	let last = tag.toUpperCase() !== "LATEST" ? make_full(tag) : null
-	/** @type {?object} */
-	let biggestLast = null
-
 	core.info("Getting Latest Tag")
-	let lastTag = await getBiggestTag(api, owner, repo, tag)
+	let lastTag = await getBiggestTag(api, owner, repo, null)
 	if (lastTag === null){
 		core.setFailed("Unable to find last tag")
 		return
 	} else {
-		core.info(lastTag.tag_name)
+		core.info(`Bumping ${bump} for ${lastTag.tag_name}`)
 	}
 
+	let version = SemVer.parseSemVer(lastTag.tag_name)
+	switch (bump){
+		case "major":
+			version.major += 1
+			version.minor = 0
+			version.patch = 0
+			break
+		case "minor":
+			version.minor += 0
+			version.patch = 0
+			break
+	}
+	core.info(`Next version: v${version.major}.${version.minor}`)
+
+	core.setOutput("last", lastTag.tag_name)
+	core.setOutput("next", `v${version.major}.${version.minor}`)
 }
 
 /**
