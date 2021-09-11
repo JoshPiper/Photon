@@ -32,4 +32,4 @@ jobs:
       - name: Dump Step Context
         run: echo "$STEP_CONTEXT"
         env:
-          STEP_CONTEXT: "${{ fromJSON( steps.bump.outputs ) }}"
+          STEP_CONTEXT: "${{ toJSON( steps.bump.outputs ) }}"
