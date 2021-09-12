@@ -92,6 +92,7 @@ async function run(){
 
 			if (typeof commit.header === "string" && commit.type === null){
 				let prefix = commit.header.match(/^\[([~+-])\]/)
+				core.info(`found prefix: ${prefix}`)
 				switch (prefix){
 					case "+":
 						commit.type = "feature"
