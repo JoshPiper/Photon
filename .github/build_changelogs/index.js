@@ -43,8 +43,12 @@ async function unshallow_until_revs(from, to = "HEAD"){
 		await exec("git", ["rev-list", "--count", `${from}..${to}`, "--"])
 	} catch (e){
 		/** @type {Error} e */
-		console.log(e)
-		console.warn(inspect(e))
+		if (e.stderr.trim() === `fatal: bad revision '${from}..${to}'`){
+			let response = await exec("git", ["fetch", "--deepen=1"])
+			core.info(inspect(response))
+		} else {
+			throw e
+		}
 	}
 }
 
