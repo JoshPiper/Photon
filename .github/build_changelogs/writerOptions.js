@@ -1,11 +1,14 @@
-const {readFile} = require("fs/promises")
+const {readFile} = require("fs")
+const {promomisify} = require("util")
 const {resolve} = require("path")
+
+let read = promomisify(readFile)
 
 module.exports = async function(){
 	let path = resolve(__dirname, "node_modules", "conventional-changelog-angular", "templates")
 	let [mainTemplate, headerPartial, commitPartial, footerPartial] = await Promise.all(["template", "header", "commit", "footer"]
 		.map(file => resolve(path, `${file}.hbs`))
-		.map((p) => readFile(p, {encoding: "utf8"}))
+		.map((p) => read(p, {encoding: "utf8"}))
 	)
 
 	return {
