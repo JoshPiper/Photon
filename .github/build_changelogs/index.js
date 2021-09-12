@@ -97,20 +97,24 @@ async function run(){
 			core.endGroup()
 
 			if (typeof commit.header === "string" && commit.type === null){
-				let prefix = commit.header.match(/^\[([~+-])\]/)[1]
-				core.info(`found prefix: ${prefix}`)
-				switch (prefix){
-					case "+":
-						commit.type = "feature"
-						break
-					case "-":
-						commit.type = "removal"
-						break
-					case "~":
-						commit.type = "fix"
-						break
+				let prefix = commit.header.match(/^\[([~+-])\]/)
+				if (prefix !== null){
+					prefix = prefix[1]
+					core.info(`found prefix: ${prefix}`)
+					switch (prefix){
+						case "+":
+							commit.type = "feature"
+							break
+						case "-":
+							commit.type = "removal"
+							break
+						case "~":
+							commit.type = "fix"
+							break
+					}
+					commit.header = commit.header.substr(3).trimLeft()
 				}
-				commit.header = commit.header.substr(3).trimLeft()
+
 			}
 
 
