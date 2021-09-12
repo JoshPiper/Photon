@@ -47,6 +47,7 @@ async function unshallow_until_revs(from, to = "HEAD"){
 			core.endGroup()
 
 			if (response.stdout.trim() === ""){
+				await exec("git", ["fetch", "--deepen=10"])
 				continue;
 			}
 
