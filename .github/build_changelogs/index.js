@@ -97,7 +97,7 @@ async function run(){
 			core.endGroup()
 
 			if (typeof commit.header === "string" && commit.type === null){
-				let prefix = commit.header.match(/^\[([~+-])\]/)
+				let prefix = commit.header.match(/^\[([~+-])\]/)[1]
 				core.info(`found prefix: ${prefix}`)
 				switch (prefix){
 					case "+":
