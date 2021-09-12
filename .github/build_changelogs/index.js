@@ -83,7 +83,7 @@ async function run(){
 			core.startGroup("commit")
 			core.info(inspect(commit))
 			core.endGroup()
-			return done(commit)
+			return done(null, commit)
 		}
 	}, {
 		previousTag: before,
