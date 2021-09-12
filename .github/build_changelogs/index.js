@@ -89,6 +89,8 @@ async function run(){
 		previousTag: before,
 		currentTag: after,
 		version: after
+	}, {
+		from: before
 	})
 
 	let log = await stream_to_string(stream)
