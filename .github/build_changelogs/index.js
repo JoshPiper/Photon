@@ -47,11 +47,12 @@ async function unshallow_until_revs(from, to = "HEAD"){
 	} catch (e){
 		/** @type {Error} e */
 		if (e.stderr.trim() === `fatal: bad revision '${from}..${to}'`){
-			core.group("deepen")
 			let response = await exec("git", ["fetch", "--deepen=1"])
+			core.group("deepen")
 			core.info(inspect(response))
 			core.endGroup()
 		} else {
+			core.error(e.stderr.trim())
 			core.setFailed(e)
 			throw e
 		}
