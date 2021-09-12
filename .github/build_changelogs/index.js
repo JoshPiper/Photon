@@ -80,7 +80,33 @@ async function run(){
 	let stream = changelog({
 		// debug: core.info,
 		transform: function(commit, done){
-			core.startGroup("commit")
+			// old categories: deprecation, changes, features, bug fixes, core library, commands & settings.
+			// types: feature, fix, change, removal
+			// scopes: library, commands, settings
+
+			core.startGroup("commit pre-transform")
+			core.info(inspect(commit))
+			core.endGroup()
+
+			if (typeof commit.header === "string" && commit.type === null){
+				let prefix = commit.header.match(/^\[([~+-])\]/)
+				switch (prefix){
+					case "+":
+						commit.type = "feature"
+						break
+					case "-":
+						commit.type = "removal"
+						break
+					case "~":
+						commit.type = "fix"
+						break
+				}
+				commit.header = commit.header.substr(3).trimLeft()
+			}
+
+
+
+			core.startGroup("commit post-transform")
 			core.info(inspect(commit))
 			core.endGroup()
 			return done(null, commit)
