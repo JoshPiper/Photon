@@ -91,6 +91,8 @@ async function run(){
 		version: after
 	}, {
 		from: before
+	}, {
+		noteKeywords: ['BREAKING CHANGE', 'DEPRECATES']
 	})
 
 	let log = await stream_to_string(stream)
