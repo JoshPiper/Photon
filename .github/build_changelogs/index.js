@@ -41,8 +41,8 @@ function stream_to_string(stream, encoding="utf8"){
 async function unshallow_until_revs(from, to = "HEAD"){
 	while (true){
 		try {
-			let response = await exec("git", ["log", `${from}..${to}`, "--"])
-			core.group("rev-list")
+			let response = await exec("git", ["log", `-n=1`, from, "--"])
+			core.startGroup("rev-list")
 			core.info(inspect(response))
 			core.endGroup()
 			return
@@ -50,7 +50,7 @@ async function unshallow_until_revs(from, to = "HEAD"){
 			/** @type {Error} e */
 			if (e.stderr.trim() === `fatal: bad revision '${from}..${to}'`){
 				let response = await exec("git", ["fetch", "--deepen=10"])
-				core.group("deepen")
+				core.startGroup("deepen")
 				core.info(inspect(response))
 				core.endGroup()
 			} else {
