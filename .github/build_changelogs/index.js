@@ -3,7 +3,11 @@ const github = require('@actions/github')
 const {inspect, promisify} = require("util")
 const changelog = require("conventional-changelog-core")
 const angular = require("conventional-changelog-angular")
+const {readFileSync: readFile} = require("fs")
+const {resolve} = require("path")
 const childProcess = require("child_process")
+
+const writerOptions = require("./writerOptions")
 
 const exec = promisify(childProcess.execFile)
 
@@ -77,6 +81,8 @@ async function run(){
 	const before = core.getInput("before")
 	const after = core.getInput("after")
 
+	const _writerOptions = await writerOptions()
+
 	// await unshallow_until_revs(before)
 	let stream = changelog({
 		config: angular,
@@ -122,12 +128,7 @@ async function run(){
 		from: before
 	}, {
 		noteKeywords: ['BREAKING CHANGE', 'DEPRECATES']
-	}, {
-		groupBy: 'type',
-		commitGroupsSort: 'title',
-		commitsSort: ['scope', 'subject'],
-		noteGroupsSort: 'title',
-	})
+	}, _writerOptions)
 
 	let log = await stream_to_string(stream)
 	core.info(log)
