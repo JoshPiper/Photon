@@ -44,7 +44,6 @@ async function unshallow_until_revs(from, to = "HEAD"){
 		core.group("rev-list")
 		core.info(inspect(response))
 		core.endGroup()
-		return
 	} catch (e){
 		/** @type {Error} e */
 		if (e.stderr.trim() === `fatal: bad revision '${from}..${to}'`){
