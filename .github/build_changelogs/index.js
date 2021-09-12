@@ -39,7 +39,7 @@ async function run(){
 
 	let refs = `${before}..HEAD`
 
-	let response = await exec("git", ["rev-list", refs, "--count"])
+	let response = await exec("git", ["rev-list", "--count", refs, "--"])
 	console.log(response)
 
 	let stream = changelog({
