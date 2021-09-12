@@ -53,7 +53,7 @@ async function run(){
 	const before = core.getInput("before")
 	const after = core.getInput("after")
 
-	let refs = `${before}..HEAD`
+	await unshallow_until_revs(before)
 
 
 
