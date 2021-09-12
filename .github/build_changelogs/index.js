@@ -32,6 +32,22 @@ function stream_to_string(stream, encoding="utf8"){
 	})
 }
 
+/**
+ * Call git rev-list and unshallow until it successfully works or fails.
+ * @param {string} from
+ * @param {string} to
+ * @returns {Promise<void>}
+ */
+async function unshallow_until_revs(from, to = "HEAD"){
+	try {
+		await exec("git", ["rev-list", "--count", refs, "--"])
+	} catch (e){
+		/** @type {Error} e */
+		console.log(e)
+		console.warn(inspect(e))
+	}
+}
+
 async function run(){
 	const token = core.getInput("token")
 	const before = core.getInput("before")
@@ -39,8 +55,7 @@ async function run(){
 
 	let refs = `${before}..HEAD`
 
-	let response = await exec("git", ["rev-list", "--count", refs, "--"])
-	console.log(response)
+
 
 	let stream = changelog({
 		// debug: core.info,
