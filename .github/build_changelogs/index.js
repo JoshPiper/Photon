@@ -1,7 +1,10 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
-const {inspect} = require("util")
+const {inspect, promisify} = require("util")
 const changelog = require("conventional-changelog-core")
+const childProcess = require("child_process")
+
+const exec = promisify(childProcess.execFile)
 
 /**
  * Read a stream, and return the read data as a string on stream closure.
@@ -34,8 +37,13 @@ async function run(){
 	const before = core.getInput("before")
 	const after = core.getInput("after")
 
+	let refs = `${before}..HEAD`
+
+	let response = await exec("git", ["rev-list", refs, "--count"])
+	console.log(response)
+
 	let stream = changelog({
-		debug: core.info,
+		// debug: core.info,
 	}, {
 		previousTag: before,
 		currentTag: after
