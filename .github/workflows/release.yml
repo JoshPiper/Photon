@@ -12,12 +12,14 @@ on:
         default: major
 
 jobs:
-  last-tag:
+  release-data:
     runs-on: ubuntu-latest
-    name: Get Last Tag
+    name: Get Release Data
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Get Current Tag
         run: echo "${{ github.event.inputs.version }}"
       - name: Install Deps
