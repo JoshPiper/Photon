@@ -40,7 +40,8 @@ function stream_to_string(stream, encoding="utf8"){
  */
 async function unshallow_until_revs(from, to = "HEAD"){
 	try {
-		await exec("git", ["rev-list", "--count", `${from}..${to}`, "--"])
+		let response = await exec("git", ["rev-list", "--count", `${from}..${to}`, "--"])
+		core.info(inspect(response))
 		return
 	} catch (e){
 		/** @type {Error} e */
