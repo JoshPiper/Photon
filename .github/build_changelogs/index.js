@@ -81,7 +81,8 @@ async function run(){
 		// debug: core.info,
 	}, {
 		previousTag: before,
-		currentTag: after
+		currentTag: after,
+		version: after
 	})
 
 	let log = await stream_to_string(stream)
