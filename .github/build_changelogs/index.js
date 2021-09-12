@@ -2,6 +2,7 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const {inspect, promisify} = require("util")
 const changelog = require("conventional-changelog-core")
+const angular = require("conventional-changelog-angular")
 const childProcess = require("child_process")
 
 const exec = promisify(childProcess.execFile)
@@ -78,6 +79,7 @@ async function run(){
 
 	// await unshallow_until_revs(before)
 	let stream = changelog({
+		config: angular,
 		// debug: core.info,
 		transform: function(commit, done){
 			// old categories: deprecation, changes, features, bug fixes, core library, commands & settings.
@@ -119,6 +121,11 @@ async function run(){
 		from: before
 	}, {
 		noteKeywords: ['BREAKING CHANGE', 'DEPRECATES']
+	}, {
+		groupBy: 'type',
+		commitGroupsSort: 'title',
+		commitsSort: ['scope', 'subject'],
+		noteGroupsSort: 'title',
 	})
 
 	let log = await stream_to_string(stream)
