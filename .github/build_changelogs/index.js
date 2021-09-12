@@ -45,6 +45,11 @@ async function unshallow_until_revs(from, to = "HEAD"){
 			core.startGroup("rev-list")
 			core.info(inspect(response))
 			core.endGroup()
+
+			if (response.stdout.trim() === ""){
+				continue;
+			}
+
 			return
 		} catch (e){
 			/** @type {Error} e */
