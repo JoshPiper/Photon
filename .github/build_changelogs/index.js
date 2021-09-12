@@ -76,17 +76,13 @@ async function run(){
 	const before = core.getInput("before")
 	const after = core.getInput("after")
 
-	await unshallow_until_revs(before)
-
-
-
+	// await unshallow_until_revs(before)
 	let stream = changelog({
 		// debug: core.info,
 	}, {
 		previousTag: before,
 		currentTag: after
 	})
-	core.info(stream)
 
 	let log = await stream_to_string(stream)
 	core.info(log)
