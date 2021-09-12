@@ -79,6 +79,12 @@ async function run(){
 	// await unshallow_until_revs(before)
 	let stream = changelog({
 		// debug: core.info,
+		transform: function(commit, done){
+			core.startGroup("commit")
+			core.info(inspect(commit))
+			core.endGroup()
+			return done(commit)
+		}
 	}, {
 		previousTag: before,
 		currentTag: after,
