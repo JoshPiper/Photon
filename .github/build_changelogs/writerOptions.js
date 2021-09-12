@@ -1,8 +1,8 @@
 const {readFile} = require("fs")
-const {promomisify} = require("util")
+const {promisify} = require("util")
 const {resolve} = require("path")
 
-let read = promomisify(readFile)
+let read = promisify(readFile)
 
 module.exports = async function(){
 	let path = resolve(__dirname, "node_modules", "conventional-changelog-angular", "templates")
