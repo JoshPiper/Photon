@@ -41,6 +41,7 @@ function stream_to_string(stream, encoding="utf8"){
 async function unshallow_until_revs(from, to = "HEAD"){
 	try {
 		await exec("git", ["rev-list", "--count", `${from}..${to}`, "--"])
+		return
 	} catch (e){
 		/** @type {Error} e */
 		if (e.stderr.trim() === `fatal: bad revision '${from}..${to}'`){
