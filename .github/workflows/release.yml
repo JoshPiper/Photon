@@ -45,8 +45,11 @@ jobs:
           token: ${{ github.token }}
           before: ${{ steps.bump.outputs.last }}
           after: ${{ steps.bump.outputs.next }}
-      - name: Fetch Series Title
+      - name: Generate Series Title
         uses: ./.github/photon_title
         id: title
         with:
           next: ${{ steps.bump.outputs.next }}
+      - name: Read used.json
+        run: cat .github/photon_title/used.json
+
