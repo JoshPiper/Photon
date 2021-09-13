@@ -2,6 +2,8 @@ const {readFile} = require("fs")
 const {promisify} = require("util")
 const {resolve} = require("path")
 
+const config = require("./config.json")
+
 let read = promisify(readFile)
 
 module.exports = async function(){
@@ -45,54 +47,12 @@ module.exports = async function(){
 			}
 
 			type = type.toLowerCase()
-			switch (type){
-				case 'feat':
-				case 'feature':
-					commit.type = "Features"
-					break
-				case 'fix':
-				case 'bug':
-					commit.type = "Bug Fixes"
-					break
-				case 'perf':
-				case 'performance':
-					commit.type = "Performance Improvments"
-					break
-				case 'removal':
-				case 'remove':
-				case 'removals':
-					commit.type = "Removals"
-					break
-				case 'revert':
-					commit.types = "Reverts"
-					break
-				case 'doc':
-				case 'docs':
-				case 'documentation':
-					commit.type = "Documentation"
-					break
-				case 'ref':
-				case 'refactor':
-					commit.type = "Refactor"
-					break
-				case 'style':
-				case 'styles':
-				case 'format':
-				case 'reformat':
-					commit.type = "Style / Formatting"
-					break
-				case 'test':
-				case 'tests':
-					commit.types = "Tests"
-					break
-				case 'build':
-				case 'ci':
-				case 'cd':
-				case 'ci/cd':
-					commit.types = "Builds"
-			}
-			if (commit.revert){
+			if (config[type] !== undefined){
+				commit.type = config[type]
+			} else if (commit.revert){
 				commit.type = "Reverts"
+			} else {
+				return
 			}
 
 			if (commit.scope === "*"){
