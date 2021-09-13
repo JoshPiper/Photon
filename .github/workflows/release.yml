@@ -51,7 +51,7 @@ jobs:
         env:
           TITLE_CONTEXT: "${{ toJSON( steps.title.outputs ) }}"
       - name: Commit Updated used.json
-        run: "git add .github/photon_title/used.yml && git commit -m \"chore(release): update used.yml\"" && git push
+        run: "git add .github/photon_title/used.yml && git commit -m \"chore(release): update used.yml\""
       - name: Prepare Updated Photon Config
         run: |
           sed -i "s/PHOTON_UPDATE = \d+/PHOTON_UPDATE = ${{ steps.bump.outputs.numeric }}/" lua/autorun/photon/sh_emv_config.lua
