@@ -53,12 +53,12 @@ jobs:
           next: v110
       - name: Read used.json
         run: cat .github/photon_title/used.json
-    - name: Generate Series Title 2
-      uses: ./.github/photon_title
-      id: title
-      with:
-        #          next: ${{ steps.bump.outputs.next }}
-        next: v160
-      - name: Read used.json
-        run: cat .github/photon_title/used.json
+      - name: Generate Series Title 2
+        uses: ./.github/photon_title
+        id: title
+        with:
+          #          next: ${{ steps.bump.outputs.next }}
+          next: v160
+        - name: Read used.json
+          run: cat .github/photon_title/used.json
 
