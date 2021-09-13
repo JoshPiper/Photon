@@ -1,3 +1,6 @@
+const {writeFileSync} = require("fs")
+const {resolve} = require("path")
+
 const core = require('@actions/core')
 const SemVer = require("semver-parser")
 
@@ -113,6 +116,8 @@ async function run(){
 	if (municipalities.length < 20){
 		core.warning(`Only ${municipalities.length} unused municipalities remain in the pool!`)
 	}
-	require("fs").writeFileSync(require("path").resolve(__dirname, "used.json"), JSON.stringify(used))
+
+	writeFileSync(resolve(__dirname, "used.json"), JSON.stringify(used))
+	core.info("Updated used.json")
 }
 run()
