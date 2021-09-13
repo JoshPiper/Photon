@@ -63,5 +63,5 @@ jobs:
       - name: Dump Title Context
         run: echo "$TITLE_CONTEXT"
         env:
-          TITLE_CONTEXT: "${{ toJSON( steps.title.outputs }}"
+          TITLE_CONTEXT: "${{ toJSON( steps.title.outputs ) }}"
 
