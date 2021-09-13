@@ -60,4 +60,8 @@ jobs:
           next: v160
       - name: Read used.json
         run: cat .github/photon_title/used.json
+      - name: Dump Title Context
+        run: echo "$TITLE_CONTEXT"
+        env:
+          TITLE_CONTEXT: "${{ toJSON( steps.title.outputs }}"
 
