@@ -55,7 +55,6 @@ jobs:
         run: cat .github/photon_title/used.json
       - name: Generate Series Title 2
         uses: ./.github/photon_title
-        id: title
         with:
           #          next: ${{ steps.bump.outputs.next }}
           next: v160
