@@ -6,7 +6,7 @@ const config = require("./config.json")
 
 let read = promisify(readFile)
 
-module.exports = async function(){
+module.exports = async function(debug = false){
 	let path = resolve(__dirname, "node_modules", "conventional-changelog-angular", "templates")
 	let [mainTemplate, headerPartial, commitPartial, footerPartial] = await Promise.all(["template", "header", "commit", "footer"]
 		.map(file => resolve(path, `${file}.hbs`))
@@ -51,7 +51,7 @@ module.exports = async function(){
 				commit.type = config[type]
 			} else if (commit.revert){
 				commit.type = "Reverts"
-			} else {
+			} else if (!debug){
 				return
 			}
 
