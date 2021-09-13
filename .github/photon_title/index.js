@@ -101,6 +101,7 @@ async function run(){
 			core.info(`We will use ${pick}.`)
 
 			used[major.toString()] = pick
+			municipalities = municipalities.filter(municipality => municipality !== pick)
 
 			if (major === version.major){
 				core.setOutput("series", pick)
