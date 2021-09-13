@@ -60,9 +60,8 @@ jobs:
         run: "git add .github/photon_title/used.json && git commit -m \"chore(release): update used.json\""
       - name: Prepare Updated Photon Config
         run: |
-          sed -i -e "s/PHOTON_UPDATE = \d+/PHOTON_UPDATE = ${{ steps.bump.outputs.numeric }}/" lua/autorun/photon/sh_emv_config.lua
-          sed -i -e "s/PHOTON_SERIES = \"[\w .]+\"/PHOTON_SERIES = \"${{ steps.title.outputs.series }}\"/" lua/autorun/photon/sh_emv_config.lua
-          git status
+          perl -i -p -e "s/PHOTON_UPDATE = (\d+.?\d*)/PHOTON_UPDATE = ${{ steps.bump.outputs.numeric }}/" lua/autorun/photon/sh_emv_config.lua
+          perl -i -p -e "s/PHOTON_SERIES = \"[\w .]+\"/PHOTON_SERIES = \"${{ steps.title.outputs.series }}\"/" lua/autorun/photon/sh_emv_config.lua
       - name: Commit Updated Photon Config
         run: "git add lua/autorun/photon/sh_emv_config.lua && git commit -m \"chore(release): bump photon config version\""
       - name: Prepare Updated Doc-Blocks
