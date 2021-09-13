@@ -1,0 +1,12 @@
+name: Photon Release Titler
+description: Generate a photon release title.
+
+runs:
+  main: index.js
+  using: node12
+  pre: npm i
+
+inputs:
+  next:
+    description: The next version id.
+    required: true

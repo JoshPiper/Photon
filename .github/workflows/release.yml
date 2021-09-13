@@ -26,6 +26,7 @@ jobs:
         run: |
           cd .github/tag_bump && npm i && cd ../..
           cd .github/build_changelogs && npm i && cd ../..
+          cd .github/photon_title && npm i && cd ../..
       - name: Get Test Tag Bumping
         id: bump
         uses: ./.github/tag_bump
@@ -43,3 +44,8 @@ jobs:
           token: ${{ github.token }}
           before: ${{ steps.bump.outputs.last }}
           after: ${{ steps.bump.outputs.next }}
+      - name: Fetch Series Title
+        uses: ./.github/photon_title
+        id: title
+        with:
+          next: ${{ steps.bump.outputs.next }}
