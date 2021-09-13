@@ -65,7 +65,7 @@ jobs:
       - name: Commit Updated Photon Config
         run: "git add lua/autorun/photon/sh_emv_config.lua && git commit -m \"chore(release): bump photon config version\""
       - name: Prepare Updated Doc-Blocks
-        run: sed -i "s/^@release(.*)$/@release ${{ steps.bump.outputs.next }} - ${{ steps.title.outputs.series }}/" lua/**.lua
+        run: find lua -type f -iname '*lua' | xargs perl -i -p -e "s/^\@release(.*)$/\@release ${{ steps.bump.outputs.next }} ${{ steps.title.outputs.series }}/"
       - name: Commit Updated Doc-Blocks
         run: "git add lua/**.lua && git commit -m \"chore(release): update version doc-blocks\""
       - name: Push Release Candidate
