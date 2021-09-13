@@ -69,5 +69,5 @@ jobs:
       - name: Commit Updated Doc-Blocks
         run: "git add lua/**.lua && git commit -m \"chore(release): update version doc-blocks\""
       - name: Push Release Candidate
-        run: git push
+        run: git push --set-upstream origin "release/${{ steps.bump.outputs.next }}"
 
