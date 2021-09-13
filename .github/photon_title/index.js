@@ -25,6 +25,7 @@ async function run(){
 
 	if (version.minor !== 0 && version.minor !== undefined){
 		core.setOutput("series", "")
+		core.warning("Patch versions don't get an updated series title.")
 		return
 	}
 	/** @type {string[]} */
