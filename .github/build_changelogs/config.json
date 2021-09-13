@@ -1,0 +1,37 @@
+{
+	"feat": "Features",
+	"feature": "Features",
+	"features": "Features",
+
+	"fix": "Bug Fixes",
+	"bug": "Bug Fixes",
+	
+	"perf": "Performance Improvements",
+	"performance": "Performance Improvements",
+
+	"removal": "Removals",
+	"remove": "Removals",
+	"removals": "Removals",
+
+	"revert": "Reverts",
+
+	"doc": "Documentation",
+	"docs": "Documentation",
+	"documentation": "Documentation",
+
+	"ref": "Refactor",
+	"refactor": "Refactor",
+
+	"style": "Code Style & Formatting",
+	"styles": "Code Style & Formatting",
+	"format": "Code Style & Formatting",
+	"reformat": "Code Style & Formatting",
+
+	"test": "Tests",
+	"tests": "Tests",
+
+	"build": "Builds",
+	"ci": "Builds",
+	"cd": "Builds",
+	"ci/cd": "Builds"
+}
