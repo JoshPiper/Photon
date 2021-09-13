@@ -81,7 +81,7 @@ async function run(){
 	const before = core.getInput("before")
 	const after = core.getInput("after")
 
-	const _writerOptions = await writerOptions()
+	const _writerOptions = await writerOptions(true)
 
 	// await unshallow_until_revs(before)
 	let stream = changelog({
