@@ -12,9 +12,9 @@ on:
         default: major
 
 jobs:
-  release-data:
+  prepare-release:
     runs-on: ubuntu-latest
-    name: Get Release Data
+    name: Prepare Release Data
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -45,19 +45,23 @@ jobs:
         uses: ./.github/photon_title
         id: title
         with:
-#          next: ${{ steps.bump.outputs.next }}
-          next: v110
-      - name: Read used.json
-        run: cat .github/photon_title/used.json
-      - name: Generate Series Title 2
-        uses: ./.github/photon_title
-        with:
-          #          next: ${{ steps.bump.outputs.next }}
-          next: v160
-      - name: Read used.json
-        run: cat .github/photon_title/used.json
+          next: ${{ steps.bump.outputs.next }}
       - name: Dump Title Context
         run: echo "$TITLE_CONTEXT"
         env:
           TITLE_CONTEXT: "${{ toJSON( steps.title.outputs ) }}"
+      - name: Commit Updated used.json
+        run: "git add .github/photon_title/used.yml && git commit -m \"chore(release): update used.yml\"" && git push
+      - name: Prepare Updated Photon Config
+        run: |
+          sed -i "s/PHOTON_UPDATE = \d+/PHOTON_UPDATE = ${{ steps.bump.outputs.numeric }}/" lua/autorun/photon/sh_emv_config.lua
+          sed -i "s/PHOTON_SERIES = \"[\w .]+\"/PHOTON_SERIES = \"${{ steps.title.outputs.series }}\" lua/autorun/photon/sh_emv_config.lua
+      - name: Commit Updated Photon Config
+        run: "git add lua/autorun/photon/sh_emv_config.lua && git commit -m \"chore(release): bump photon config version"
+      - name: Prepare Updated Doc-Blocks
+        run: sed -i "s/^@release(.*)$/@release ${{ steps.bump.outputs.next }} - ${{ steps.title.outputs.series }}/" lua/**.lua
+      - name: Commit Updated Doc-Blocks
+        run: "git add lua/**.lua && git commit -m \"chore(release): update version doc-blocks"
+      - name: Push Release Candidate
+        run: git push
 

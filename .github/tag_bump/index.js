@@ -63,8 +63,10 @@ async function run(){
 	core.setOutput("last", lastTag.tag_name)
 	if (version.minor !== 0){
 		core.setOutput("next", `v${version.major}.${version.minor}`)
+		core.setOutput("numeric", `${version.major}.${version.minor}`)
 	} else {
 		core.setOutput("next", `v${version.major}`)
+		core.setOutput("numeric", `${version.major}`)
 	}
 }
 
