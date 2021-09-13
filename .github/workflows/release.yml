@@ -34,12 +34,13 @@ jobs:
           owner: JoshPiper
           token: ${{ github.token }}
           bump: ${{ github.event.inputs.bump }}
-      - name: Dump Step Context
-        run: echo "$STEP_CONTEXT"
-        env:
-          STEP_CONTEXT: "${{ toJSON( steps.bump.outputs ) }}"
+#      - name: Dump Step Context
+#        run: echo "$STEP_CONTEXT"
+#        env:
+#          STEP_CONTEXT: "${{ toJSON( steps.bump.outputs ) }}"
       - name: Write Changelog
         uses: ./.github/build_changelogs
+        id: changelog
         with:
           token: ${{ github.token }}
           before: ${{ steps.bump.outputs.last }}
