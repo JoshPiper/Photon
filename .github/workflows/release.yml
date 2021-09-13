@@ -20,8 +20,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Get Current Tag
-        run: echo "${{ github.event.inputs.version }}"
       - name: Install Deps
         run: |
           cd .github/tag_bump && npm i && cd ../..
@@ -34,10 +32,8 @@ jobs:
           owner: JoshPiper
           token: ${{ github.token }}
           bump: ${{ github.event.inputs.bump }}
-#      - name: Dump Step Context
-#        run: echo "$STEP_CONTEXT"
-#        env:
-#          STEP_CONTEXT: "${{ toJSON( steps.bump.outputs ) }}"
+      - name: Setup Release Branch
+        run: git checkout -b "release/${{ steps.bump.outputs.next }}"
       - name: Write Changelog
         uses: ./.github/build_changelogs
         id: changelog
