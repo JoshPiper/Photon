@@ -33,7 +33,7 @@ async function run(){
 	let starter = {}
 	for (let municipality of data){
 		let letter = municipality.substr(0, 1).toLowerCase()
-		starter[letter] = (starter[letter] ?? 0) + 1
+		starter[letter] = (starter[letter] !== undefined ? starter[letter] : 0) + 1
 	}
 
 	let count = Object.keys(starter).length
