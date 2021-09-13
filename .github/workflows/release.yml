@@ -50,6 +50,8 @@ jobs:
         run: echo "$TITLE_CONTEXT"
         env:
           TITLE_CONTEXT: "${{ toJSON( steps.title.outputs ) }}"
+      - name: Get Status
+        run: git status
       - name: Commit Updated used.json
         run: "git add .github/photon_title/used.yml && git commit -m \"chore(release): update used.yml\""
       - name: Prepare Updated Photon Config
