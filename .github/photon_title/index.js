@@ -110,6 +110,9 @@ async function run(){
 		core.endGroup()
 	}
 
+	if (municipalities.length < 20){
+		core.warning(`Only ${municipalities.length} unused municipalities remain in the pool!`)
+	}
 	require("fs").writeFileSync(require("path").resolve(__dirname, "used.json"), JSON.stringify(used))
 }
 run()
