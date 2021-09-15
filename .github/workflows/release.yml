@@ -141,6 +141,25 @@ jobs:
           git add lua/**.lua
           git commit -m "chore(release): update file headers"
           git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+      - name: Install Lua
+        uses: leafo/gh-actions-lua@v8.0.0
+      - name: Install Luarocks
+        uses: leafo/gh-actions-luarocks@v4.0.0
+      - name: Install LDoc
+        run: |
+          luarocks install luafilesystem
+          luarocks install penlight
+          luarocks install markdown
+          luarocks install argparse
+          luarocks install ldoc
+      - name: Build Documentation
+        run: ldoc -M -c ./config.ld -t 'Photon Lighting Engine' -d ./docs ./lua
+      - name: Commit Updated Documentation
+        run: |
+          git add docs/**
+          git commit -m "chore(release): update documentation"
+          git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+
 
 #
 #  prepare-release:
