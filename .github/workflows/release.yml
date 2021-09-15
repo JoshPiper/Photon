@@ -41,7 +41,7 @@ jobs:
         run: npm i
       - name: Bump Version
         id: bump
-        uses: .github/tag_bump
+        uses: ./.github/tag_bump
         with:
           owner: JoshPiper
           token: ${{ github.token }}
@@ -65,7 +65,7 @@ jobs:
         working-directory: .github/photon_title
         run: npm i
       - name: Generate Series Title
-        uses: .github/photon_title
+        uses: ./.github/photon_title
         id: title
         with:
           next: ${{ steps.bump.outputs.next }}
@@ -90,7 +90,7 @@ jobs:
         working-directory: .github/build_changelogs
         run: npm i
       - name: Write Changelog
-        uses: .github/build_changelogs
+        uses: ./.github/build_changelogs
         id: changelog
         with:
           token: ${{ github.token }}
