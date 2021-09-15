@@ -21,6 +21,8 @@ jobs:
         id: permission
         with:
           required-permission: "admin"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Permission Check Failed
         if: steps.permission.outputs.has-permission == ''
         run: exit 1
