@@ -22,7 +22,7 @@ jobs:
         with:
           required-permission: "admin"
       - name: Permission Check Failed
-        if: steps.permission.outputs.has-permission == ""
+        if: steps.permission.outputs.has-permission == ''
         run: exit 1
 
   prepare-version:
