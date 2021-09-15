@@ -16,6 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Prepare Release Data
     steps:
+      - name: Check Permission
+        uses: scherermichael-oss/action-has-permission@1.0.5
+        id: permission
+        with:
+          required-permission: "admin"
+      - name: Cancel if Permission Check Fails
+        if: steps.permission.outputs.has-permission == ""
+        run: exit 1
       - name: Checkout
         uses: actions/checkout@v2
         with:
