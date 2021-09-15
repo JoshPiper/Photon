@@ -118,7 +118,7 @@ jobs:
           perl -i -p -e "s/PHOTON_SERIES = \"[\w .]+\"/PHOTON_SERIES = \"${{ needs.prepare-series.outputs.series_title }}\"/" lua/autorun/photon/sh_emv_config.lua
       - name: Commit Updated Photon Config
         run: |
-          git add .github/photon_title/used.json
+          git add lua/autorun/photon/sh_emv_config.lua
           git commit -m "chore(release): update photon config files"
           git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
 
