@@ -75,7 +75,7 @@ jobs:
         run: |
           git add .github/photon_title/used.json
           git commit -m "chore(release): update used.json"
-          git push --set-upstream origin "release/${{ steps.bump.outputs.next }}/title
+          git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/title"
 
   generate-changelog:
     runs-on: ubuntu-latest
@@ -120,7 +120,7 @@ jobs:
         run: |
           git add .github/photon_title/used.json
           git commit -m "chore(release): update photon config files"
-          git push --set-upstream origin "release/${{ steps.bump.outputs.next }}/config"
+          git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
 
   update-documentation:
     runs-on: ubuntu-latest
@@ -140,7 +140,7 @@ jobs:
         run: |
           git add lua/**.lua
           git commit -m "chore(release): update file headers"
-          it push --set-upstream origin "release/${{ steps.bump.outputs.next }}/headers"
+          it push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
 #
 #  prepare-release:
 #    runs-on: ubuntu-latest
