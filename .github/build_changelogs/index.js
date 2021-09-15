@@ -135,6 +135,11 @@ async function run(){
 	}, _writerOptions)
 
 	let log = await stream_to_string(stream)
-	core.info(log)
+	if (log.trim() === ""){
+		core.setFailed("Changelog was empty.")
+		return
+	}
+
+	core.setOutput("changelog", log)
 }
 run()
