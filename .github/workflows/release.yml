@@ -133,14 +133,14 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git checkout -b "release/${{ needs.prepare-version.outputs.series_id }}/headers"
+          git checkout -b "release/${{ needs.prepare-version.outputs.series_id }}/docs"
       - name: Update File Headers
         run: find lua -type f -iname '*lua' | xargs perl -i -p -e "s/^\@release(.*)$/\@release ${{ needs.prepare-version.outputs.series_id }} ${{ needs.prepare-series.outputs.series_title }}/"
       - name: Commit Updated Files
         run: |
           git add lua/**.lua
           git commit -m "chore(release): update file headers"
-          git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
+          git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
 
 #
 #  prepare-release:
