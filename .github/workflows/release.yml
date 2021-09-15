@@ -70,7 +70,7 @@ jobs:
         uses: ./.github/photon_title
         id: title
         with:
-          next: ${{ steps.bump.outputs.next }}
+          next: ${{ needs.prepare-version.outputs.series_id }}
       - name: Commit Updated Files
         run: |
           git add .github/photon_title/used.json
