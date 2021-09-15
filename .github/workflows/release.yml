@@ -125,7 +125,7 @@ jobs:
   update-headers:
     runs-on: ubuntu-latest
     name: Update Documentation
-    needs: [prepare-version]
+    needs: [prepare-version, prepare-series]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -135,7 +135,7 @@ jobs:
           git config user.email github-actions@github.com
           git checkout -b "release/${{ needs.prepare-version.outputs.series_id }}/headers"
       - name: Update File Headers
-        run: find lua -type f -iname '*lua' | xargs perl -i -p -e "s/^\@release(.*)$/\@release ${{ steps.bump.outputs.next }} ${{ steps.title.outputs.series }}/"
+        run: find lua -type f -iname '*lua' | xargs perl -i -p -e "s/^\@release(.*)$/\@release ${{ needs.prepare-version.outputs.series_id }} ${{ needs.prepare-series.outputs.series_title }}/"
       - name: Commit Updated Files
         run: |
           git add lua/**.lua
