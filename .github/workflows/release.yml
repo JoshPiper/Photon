@@ -160,6 +160,44 @@ jobs:
           git commit -m "chore(release): update documentation"
           git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
 
+  merge-branches:
+    runs-on: ubuntu-latest
+    name: Merge Release Branches
+    needs: [prepare-version, prepare-series, update-config, update-documentation]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -b -b "release/${{ needs.prepare-version.outputs.series_id }}/merge"
+      - name: Merge Series Name File
+        run: |
+          git pull "release/${{ needs.prepare-version.outputs.series_id }}/title"
+          git checkout "release/${{ needs.prepare-version.outputs.series_id }}/title"
+          git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
+          git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/title"
+          git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/title"
+      - name: Merge Updated Config
+        run: |
+          git pull "release/${{ needs.prepare-version.outputs.series_id }}/config"
+          git checkout "release/${{ needs.prepare-version.outputs.series_id }}/config"
+          git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
+          git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/config"
+          git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
+    - name: Merge Updated Documentation
+      run: |
+        git pull "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+        git checkout "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+        git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
+        git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+        git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+    - name: Push Release Candidate
+      run: |
+        git branch -m "release/${{ needs.prepare-version.outputs.series_id }}/merge" "release/${{ needs.prepare-version.outputs.series_id }}"
+        git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}"
+
 
 #
 #  prepare-release:
