@@ -140,7 +140,8 @@ jobs:
         run: |
           git add lua/**.lua
           git commit -m "chore(release): update file headers"
-          it push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
+          git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
+
 #
 #  prepare-release:
 #    runs-on: ubuntu-latest
