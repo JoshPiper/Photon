@@ -77,7 +77,7 @@ jobs:
           git commit -m "chore(release): update used.json"
           git push --set-upstream origin "release/${{ steps.bump.outputs.next }}/title
 
-  prepare-changelog:
+  generate-changelog:
     runs-on: ubuntu-latest
     name: Prepare Changelog
     needs: [prepare-version, prepare-series]
@@ -122,7 +122,7 @@ jobs:
           git commit -m "chore(release): update photon config files"
           git push --set-upstream origin "release/${{ steps.bump.outputs.next }}/config"
 
-  update-headers:
+  update-documentation:
     runs-on: ubuntu-latest
     name: Update Documentation
     needs: [prepare-version, prepare-series]
