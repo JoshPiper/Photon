@@ -175,17 +175,14 @@ jobs:
       - name: Merge Series Name File
         run: |
           git pull --rebase origin "release/${{ needs.prepare-version.outputs.series_id }}/title"
-          git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/title"
           git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/title"
       - name: Merge Updated Config
         run: |
           git pull --rebase origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
-          git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/config"
           git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
       - name: Merge Updated Documentation
         run: |
           git pull --rebase origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
-          git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/docs"
           git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
       - name: Push Release Candidate
         run: |
