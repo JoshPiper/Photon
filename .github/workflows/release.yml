@@ -174,21 +174,21 @@ jobs:
           git checkout -b "release/${{ needs.prepare-version.outputs.series_id }}/merge"
       - name: Merge Series Name File
         run: |
-          git pull "release/${{ needs.prepare-version.outputs.series_id }}/title"
+          git pull origin "release/${{ needs.prepare-version.outputs.series_id }}/title"
           git checkout "release/${{ needs.prepare-version.outputs.series_id }}/title"
           git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
           git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/title"
           git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/title"
       - name: Merge Updated Config
         run: |
-          git pull "release/${{ needs.prepare-version.outputs.series_id }}/config"
+          git pull origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
           git checkout "release/${{ needs.prepare-version.outputs.series_id }}/config"
           git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
           git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/config"
           git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
       - name: Merge Updated Documentation
         run: |
-          git pull "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+          git pull origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
           git checkout "release/${{ needs.prepare-version.outputs.series_id }}/docs"
           git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
           git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/docs"
