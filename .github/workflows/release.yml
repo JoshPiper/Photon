@@ -98,7 +98,7 @@ jobs:
           token: ${{ github.token }}
           before: ${{ needs.prepare-version.outputs.series_last }}
           after: ${{ needs.prepare-version.outputs.series_id }}
-          title: ${{ needs.prepare-series.outputs.series_title }}"
+          title: ${{ needs.prepare-series.outputs.series_title }}
 
   update-config:
     runs-on: ubuntu-latest
