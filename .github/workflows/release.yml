@@ -186,17 +186,17 @@ jobs:
           git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
           git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/config"
           git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/config"
-    - name: Merge Updated Documentation
-      run: |
-        git pull "release/${{ needs.prepare-version.outputs.series_id }}/docs"
-        git checkout "release/${{ needs.prepare-version.outputs.series_id }}/docs"
-        git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
-        git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/docs"
-        git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
-    - name: Push Release Candidate
-      run: |
-        git branch -m "release/${{ needs.prepare-version.outputs.series_id }}/merge" "release/${{ needs.prepare-version.outputs.series_id }}"
-        git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}"
+      - name: Merge Updated Documentation
+        run: |
+          git pull "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+          git checkout "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+          git rebase "release/${{ needs.prepare-version.outputs.series_id }}/merge"
+          git branch -D "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+          git push -d origin "release/${{ needs.prepare-version.outputs.series_id }}/docs"
+      - name: Push Release Candidate
+        run: |
+          git branch -m "release/${{ needs.prepare-version.outputs.series_id }}/merge" "release/${{ needs.prepare-version.outputs.series_id }}"
+          git push --set-upstream origin "release/${{ needs.prepare-version.outputs.series_id }}"
 
 
 #
