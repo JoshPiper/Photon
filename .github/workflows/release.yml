@@ -12,70 +12,189 @@ on:
         default: major
 
 jobs:
-  prepare-release:
+  permission-check:
     runs-on: ubuntu-latest
-    name: Prepare Release Data
+    name: Check Actor Permissions
     steps:
       - name: Check Permission
         uses: scherermichael-oss/action-has-permission@1.0.5
         id: permission
         with:
           required-permission: "admin"
-      - name: Cancel if Permission Check Fails
+      - name: Permission Check Failed
         if: steps.permission.outputs.has-permission == ""
         run: exit 1
+
+  prepare-version:
+    runs-on: ubuntu-latest
+    name: Generate New Version
+    needs: [permission-check]
+    outputs:
+      series_last: ${{ steps.bump.outputs.last }}
+      series_id: ${{ steps.bump.outputs.next }}
+      series_int: ${{ steps.bump.outputs.numeric }}
+    steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Prepare Git
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-      - name: Install Deps
-        run: |
-          cd .github/tag_bump && npm i && cd ../..
-          cd .github/build_changelogs && npm i && cd ../..
-          cd .github/photon_title && npm i && cd ../..
-      - name: Get Test Tag Bumping
+      - name: Install Dependencies
+        working-directory: .github/tag_bump
+        run: npm i
+      - name: Bump Version
         id: bump
-        uses: ./.github/tag_bump
+        uses: .github/tag_bump
         with:
           owner: JoshPiper
           token: ${{ github.token }}
           bump: ${{ github.event.inputs.bump }}
-      - name: Setup Release Branch
-        run: git checkout -b "release/${{ steps.bump.outputs.next }}"
-      - name: Write Changelog
-        uses: ./.github/build_changelogs
-        id: changelog
-        with:
-          token: ${{ github.token }}
-          before: ${{ steps.bump.outputs.last }}
-          after: ${{ steps.bump.outputs.next }}
+
+  prepare-series:
+    runs-on: ubuntu-latest
+    name: Generate Series Title
+    needs: [prepare-version]
+    outputs:
+      series_title: ${{ steps.title.outputs.series }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare Git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -b "release/${{ needs.prepare-version.outputs.series_id }}/title"
+      - name: Install Dependencies
+        working-directory: .github/photon_title
+        run: npm i
       - name: Generate Series Title
-        uses: ./.github/photon_title
+        uses: .github/photon_title
         id: title
         with:
           next: ${{ steps.bump.outputs.next }}
-      - name: Dump Title Context
-        run: echo "$TITLE_CONTEXT"
-        env:
-          TITLE_CONTEXT: "${{ toJSON( steps.title.outputs ) }}"
-      - name: Get Status
-        run: git status
-      - name: Commit Updated used.json
-        run: "git add .github/photon_title/used.json && git commit -m \"chore(release): update used.json\""
+      - name: Commit Updated Files
+        run: |
+          git add .github/photon_title/used.json
+          git commit -m "chore(release): update used.json"
+          git push --set-upstream origin "release/${{ steps.bump.outputs.next }}/title
+
+  prepare-changelog:
+    runs-on: ubuntu-latest
+    name: Prepare Changelog
+    needs: [prepare-version, prepare-series]
+    outputs:
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install Dependencies
+        working-directory: .github/build_changelogs
+        run: npm i
+      - name: Write Changelog
+        uses: .github/build_changelogs
+        id: changelog
+        with:
+          token: ${{ github.token }}
+          before: ${{ needs.prepare-version.outputs.series_last }}
+          after: ${{ needs.prepare-version.outputs.series_id }}
+          title: ${{ needs.prepare-series.outputs.series_title }}"
+
+  update-config:
+    runs-on: ubuntu-latest
+    name: Update Configuration Files
+    needs: [prepare-version, prepare-series]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare Git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -b "release/${{ needs.prepare-version.outputs.series_id }}/config"
       - name: Prepare Updated Photon Config
         run: |
-          perl -i -p -e "s/PHOTON_UPDATE = (\d+.?\d*)/PHOTON_UPDATE = ${{ steps.bump.outputs.numeric }}/" lua/autorun/photon/sh_emv_config.lua
-          perl -i -p -e "s/PHOTON_SERIES = \"[\w .]+\"/PHOTON_SERIES = \"${{ steps.title.outputs.series }}\"/" lua/autorun/photon/sh_emv_config.lua
+          perl -i -p -e "s/PHOTON_UPDATE = (\d+.?\d*)/PHOTON_UPDATE = ${{ needs.prepare-version.outputs.series_int }}/" lua/autorun/photon/sh_emv_config.lua
+          perl -i -p -e "s/PHOTON_SERIES = \"[\w .]+\"/PHOTON_SERIES = \"${{ needs.prepare-series.outputs.series_title }}\"/" lua/autorun/photon/sh_emv_config.lua
       - name: Commit Updated Photon Config
-        run: "git add lua/autorun/photon/sh_emv_config.lua && git commit -m \"chore(release): bump photon config version\""
-      - name: Prepare Updated Doc-Blocks
+        run: |
+          git add .github/photon_title/used.json
+          git commit -m "chore(release): update photon config files"
+          git push --set-upstream origin "release/${{ steps.bump.outputs.next }}/config"
+
+  update-headers:
+    runs-on: ubuntu-latest
+    name: Update Documentation
+    needs: [prepare-version]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare Git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout -b "release/${{ needs.prepare-version.outputs.series_id }}/headers"
+      - name: Update File Headers
         run: find lua -type f -iname '*lua' | xargs perl -i -p -e "s/^\@release(.*)$/\@release ${{ steps.bump.outputs.next }} ${{ steps.title.outputs.series }}/"
-      - name: Commit Updated Doc-Blocks
-        run: "git add lua/**.lua && git commit -m \"chore(release): update version doc-blocks\""
-      - name: Push Release Candidate
-        run: git push --set-upstream origin "release/${{ steps.bump.outputs.next }}"
+      - name: Commit Updated Files
+        run: |
+          git add lua/**.lua
+          git commit -m "chore(release): update file headers"
+          it push --set-upstream origin "release/${{ steps.bump.outputs.next }}/headers"
+#
+#  prepare-release:
+#    runs-on: ubuntu-latest
+#    name: Prepare Release Data
+#    outputs:
+#      series_title: ${{ steps.title.outputs.series }}
+#      series_id: ${{ steps.bump.outputs.next
+#      series_int: ${{ steps.bump.outputs.numeric }}
+#      changelog: ${{ steps.changelog.outputs.changelog }}
+#    steps:
+#      - name: Check Permission
+#        uses: scherermichael-oss/action-has-permission@1.0.5
+#        id: permission
+#        with:
+#          required-permission: "admin"
+#      - name: Cancel if Permission Check Fails
+#        if: steps.permission.outputs.has-permission == ""
+#        run: exit 1
+#
+#      - name: Prepare Git
+#        run: |
+#          git config user.name github-actions
+#          git config user.email github-actions@github.com
+#      - name: Install Deps
+#        run: |
+#          cd .github/tag_bump && npm i && cd ../..
+#          cd .github/build_changelogs && npm i && cd ../..
+#          cd .github/photon_title && npm i && cd ../..
+#      - name: Bump Version
+#        id: bump
+#        uses: ./.github/tag_bump
+#        with:
+#          owner: JoshPiper
+#          token: ${{ github.token }}
+#          bump: ${{ github.event.inputs.bump }}
+#      - name: Setup Release Branch
+#        run: git checkout -b "release/${{ steps.bump.outputs.next }}"
+#      - name: Write Changelog
+#        uses: ./.github/build_changelogs
+#        id: changelog
+#        with:
+#          token: ${{ github.token }}
+#          before: ${{ steps.bump.outputs.last }}
+#          after: ${{ steps.bump.outputs.next }}
+#      - name: Generate Series Title
+#        uses: ./.github/photon_title
+#        id: title
+#        with:
+#          next: ${{ steps.bump.outputs.next }}
+#      - name: Commit Updated used.json
+#        run: "git add .github/photon_title/used.json && git commit -m \"chore(release): update used.json\""
+#
+#      - name: Prepare Updated Doc-Blocks
+#        run: find lua -type f -iname '*lua' | xargs perl -i -p -e "s/^\@release(.*)$/\@release ${{ steps.bump.outputs.next }} ${{ steps.title.outputs.series }}/"
+#      - name: Commit Updated Doc-Blocks
+#        run: "git add lua/**.lua && git commit -m \"chore(release): update version doc-blocks\""
+#      - name: Push Release Candidate
+#        run: git push --set-upstream origin "release/${{ steps.bump.outputs.next }}"
 
