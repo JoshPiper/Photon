@@ -106,6 +106,8 @@ jobs:
           title: ${{ needs.prepare-series.outputs.series_title }}
       - name: Write Changelog
         run: echo "$CHANGELOG" > CHANGELOG.md
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
       - name: Commit Updated Files
         run: |
           git add CHANGELOG.md
