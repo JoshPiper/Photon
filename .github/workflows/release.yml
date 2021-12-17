@@ -177,7 +177,7 @@ jobs:
   merge-branches:
     runs-on: ubuntu-latest
     name: Merge Release Branches
-    needs: [prepare-version, prepare-series, update-config, update-documentation]
+    needs: [prepare-version, prepare-series, update-config, update-documentation, generate-changelog]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
