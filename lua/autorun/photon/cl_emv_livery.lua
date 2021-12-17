@@ -1,6 +1,6 @@
 --[[-- Automatic Liveries
 @copyright Photon Team
-@release v74 Hot Sulphur Springs
+@release v76 Jamestown
 @author Photon Team
 @module EMVU.AutoLivery
 --]]--

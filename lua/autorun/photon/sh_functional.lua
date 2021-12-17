@@ -1,6 +1,6 @@
 --[[-- Functional Programming / Currying Library.
 @copyright Photon Team
-@release v74 Hot Sulphur Springs
+@release v76 Jamestown
 @author Joshua Piper
 @module functional
 --]]--
